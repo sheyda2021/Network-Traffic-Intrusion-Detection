@@ -1,197 +1,229 @@
-# Network-Traffic-Intrusion-Detection
-Machine Learning pipeline for network traffic intrusion detection using LightGBM and domain-specific feature engineering.
-Overview
+# Network Traffic Intrusion Detection using LightGBM
 
-This repository presents a machine learning solution for multi-class network intrusion detection using protocol-level network traffic data.
+Machine Learning pipeline for **multi-class network intrusion detection** using protocol-level network traffic data, domain-specific feature engineering, and LightGBM.
 
-The project was developed for a machine learning competition where the objective is to classify each captured network packet into one of 16 traffic categories, including normal traffic and various cyber attacks such as DoS, DDoS, SQL Injection, XSS, Port Scanning, FTP attacks, SSH brute force, and SYN Flood.
+---
 
-The solution focuses on extensive domain-specific feature engineering combined with a LightGBM classifier trained using Stratified K-Fold Cross Validation.
+## Project Overview
 
-Problem Description
+This project was developed for a machine learning competition focused on **network traffic intrusion detection**.
 
-Each row in the dataset represents a single captured network packet extracted from Wireshark.
+The objective is to classify each captured network packet into one of **16 traffic categories**, including normal traffic and multiple cyberattack types such as:
 
-The dataset contains protocol information from multiple network layers including:
+* DoS
+* DDoS
+* SYN Flood
+* SQL Injection
+* XSS
+* FTP Attacks
+* SSH Brute Force
+* Port Scanning
+* and others.
 
-Ethernet
-IP
-TCP
-UDP
-ICMP
-HTTP
-DNS
+The solution combines extensive feature engineering with a LightGBM classifier trained using Stratified K-Fold Cross Validation.
 
-One of the main challenges is that many protocol-specific fields are naturally missing because every packet does not contain every protocol.
+---
 
-The goal is to predict the correct attack category for unseen network packets.
+## Dataset
 
-Dataset
+| Item              | Value             |
+| ----------------- | ----------------- |
+| Training Samples  | ~3.3 Million      |
+| Test Samples      | ~1.2 Million      |
+| Classes           | 16                |
+| Evaluation Metric | Weighted F1 Score |
 
-Training Samples:
+The dataset contains packet-level features extracted from Wireshark across multiple protocol layers.
 
-Approximately 3.3 Million packets
+### Available Protocols
 
-Test Samples:
+* Ethernet
+* IP
+* TCP
+* UDP
+* ICMP
+* HTTP
+* DNS
 
-Approximately 1.2 Million packets
+A major challenge of the dataset is the high sparsity caused by protocol-specific fields that are naturally missing for many packets.
 
-Target Classes:
+---
 
-16 traffic categories
+# Machine Learning Pipeline
 
-Evaluation Metric:
-
-Weighted F1 Score
-Machine Learning Pipeline
+```
 Raw Network Packets
         │
         ▼
-Data Cleaning
+ Data Cleaning
         │
         ▼
-Feature Engineering
+ Feature Engineering
         │
         ▼
-Categorical Encoding
+ Categorical Encoding
         │
         ▼
-LightGBM Training
+ LightGBM
         │
         ▼
-5-Fold Stratified Cross Validation
+ Stratified 5-Fold Cross Validation
         │
         ▼
-Prediction
+ Prediction
         │
         ▼
-Submission File
-Feature Engineering
+ submission.csv
+```
 
-A significant part of the project focuses on extracting informative features from raw network packet fields.
+---
 
-Protocol Indicators
-TCP availability
-UDP availability
-HTTP availability
-DNS availability
-ICMP availability
-TCP Features
-SYN Flag
-ACK Flag
-FIN Flag
-RST Flag
-SYN-only packets
-TCP Window Size
-Log-transformed TCP Window Size
-Low Source Port
-Low Destination Port
-High Destination Port
-Packet Statistics
-Packet Length
-Frame Length
-Length Difference
-Tiny Packet Detection
-Large Packet Detection
-Port-Based Features
+# Feature Engineering
 
-Detection of commonly used service ports:
+The project includes extensive handcrafted features based on networking and cybersecurity knowledge.
 
-HTTP (80)
-HTTPS (443)
-FTP (21)
-SSH (22)
-Telnet (23)
-MySQL (3306)
-HTTP Proxy (8080)
-DNS (53)
-HTTP Features
-HTTP Request Method
-URI Length
-Cookie Presence
-Authorization Header
-Referer Header
+### Protocol Indicators
+
+* TCP availability
+* UDP availability
+* HTTP availability
+* DNS availability
+* ICMP availability
+
+### TCP Features
+
+* SYN / ACK / FIN / RST flags
+* SYN-only packets
+* TCP Window Size
+* Log-transformed Window Size
+* Low / High Port Indicators
+
+### Packet Features
+
+* Packet Length
+* Frame Length
+* Length Difference
+* Tiny Packet Detection
+* Large Packet Detection
+
+### Service Port Features
+
+* HTTP (80)
+* HTTPS (443)
+* FTP (21)
+* SSH (22)
+* Telnet (23)
+* DNS (53)
+* MySQL (3306)
+* Proxy (8080)
+
+### HTTP Features
+
+* HTTP Method
+* URI Length
+* Cookie Presence
+* Referer
+* Authorization
 
 Security-oriented features:
 
-SQL Injection Pattern Detection
-Cross-Site Scripting (XSS) Pattern Detection
-DNS Features
-Query Name Length
-Number of Subdomains
-ICMP Features
-Echo Request
-Echo Reply
-IP Features
-Protocol Identification
-TTL
-Packet Length
-Fragment Offset
-IP Flags
-Data Preprocessing
+* SQL Injection pattern detection
+* Cross-Site Scripting (XSS) pattern detection
+
+### DNS Features
+
+* Query Length
+* Number of Subdomains
+
+### ICMP Features
+
+* Echo Request
+* Echo Reply
+
+### IP Features
+
+* TTL
+* Protocol Type
+* Fragment Offset
+* IP Flags
+
+---
+
+# Data Preprocessing
 
 The preprocessing pipeline includes:
 
-Missing value handling
-Numeric conversion of protocol fields
-Label Encoding for categorical features
-Removal of unused columns
-Feature type validation
-Model
+* Missing value handling
+* Numeric conversion of protocol fields
+* Label encoding of categorical variables
+* Removal of unused columns
+* Data type validation
 
-Algorithm:
+---
 
-LightGBM
+# Model
 
-Training Strategy:
+| Component      | Description                        |
+| -------------- | ---------------------------------- |
+| Algorithm      | LightGBM                           |
+| Validation     | Stratified 5-Fold Cross Validation |
+| Early Stopping | Yes                                |
+| Random Seed    | 42                                 |
 
-Stratified 5-Fold Cross Validation
+---
 
-Validation:
+# Project Structure
 
-Out-of-Fold Prediction
-
-Early Stopping:
-
-Enabled
-
-Random Seed:
-
-42
-Libraries
-Python
-Pandas
-NumPy
-LightGBM
-Scikit-Learn
-Project Structure
+```
 Network-Traffic-Intrusion-Detection/
 
-│── train.py
-
-│── requirements.txt
-
-│── README.md
-
+├── train.py
+├── README.md
+├── requirements.txt
 └── sample_output/
-Future Improvements
+```
 
-Possible future improvements include:
+---
 
-Hyperparameter Optimization using Optuna
-Feature Importance Analysis
-SHAP Explainability
-Ensemble Models
-CatBoost and XGBoost Comparison
-Error Analysis
-Model Calibration
-Skills Demonstrated
-Machine Learning
-Feature Engineering
-Network Traffic Analysis
-Cybersecurity Analytics
-Multi-class Classification
-Cross Validation
-LightGBM
-Data Preprocessing
-Large-scale Dataset Handling
+# Requirements
+
+```
+Python
+pandas
+numpy
+lightgbm
+scikit-learn
+```
+
+---
+
+# Future Improvements
+
+Potential directions for future work include:
+
+* Hyperparameter optimization with Optuna
+* SHAP-based model explainability
+* Feature importance analysis
+* Ensemble learning
+* CatBoost / XGBoost comparison
+* Error analysis
+* Probability calibration
+
+---
+
+# Skills Demonstrated
+
+* Machine Learning
+* Feature Engineering
+* LightGBM
+* Large-scale Data Processing
+* Cybersecurity Analytics
+* Multi-class Classification
+* Cross Validation
+* Data Preprocessing
+
+---
+
+# Notes
+
+This repository is intended to demonstrate the end-to-end workflow of building a practical machine learning pipeline for a large-scale cybersecurity classification problem, from data preprocessing and feature engineering to model training and prediction.
